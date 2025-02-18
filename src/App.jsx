@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { ChevronDown, ChevronUp } from "lucide-react"
+import { ChevronDown, ChevronUp, Menu, X } from "lucide-react"
+import { motion, AnimatePresence } from "motion/react"
 
 const anchors = [
   ["/", "Home"],
@@ -19,61 +20,121 @@ const anchors = [
 
 function App() {
   const [showAboutMenu, setShowAboutMenu] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  const NavItems = ({ mobile = false }) => (
+    <>
+      {anchors.map(([href, text, subItems], index) => {
+        if (subItems) {
+          return (
+            <motion.div
+              key={href}
+              className={`mx-0 relative ${mobile ? "w-full ml-2" : ""}`}
+              initial={mobile ? { opacity: 0, y: 40 } : {}}
+              animate={mobile ? { opacity: 1, y: 0 } : {}}
+              exit={mobile ? { opacity: 0, y: -280 } : {}}
+              transition={{ duration: 0.3, delay: index * 0.1 }}
+            >
+              <button
+                onClick={() => setShowAboutMenu(!showAboutMenu)}
+                className={`flex items-center justify-center gap-2 px-3 py-2 text-white hover:text-gray-300 ${
+                  mobile ? "w-full" : ""
+                }`}
+              >
+                {text}
+                {showAboutMenu ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              </button>
+              <AnimatePresence>
+                {showAboutMenu && (
+                  <motion.div
+                    className={`mt-2 rounded-md bg-white p-2 shadow-lg ${
+                      mobile ? "relative w-[200px] mx-auto" : "absolute left-1/2 transform -translate-x-1/2 w-48"
+                    }`}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {subItems.map(([subHref, subText], subIndex) => (
+                      <motion.a
+                        key={subHref}
+                        href={subHref}
+                        className="block p-2 text-sm text-gray-800 hover:bg-gray-100 text-center"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2, delay: subIndex * 0.05 }}
+                      >
+                        {subText}
+                      </motion.a>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          )
+        } else {
+          return (
+            <motion.a
+              key={href}
+              href={href}
+              className={`px-3 py-2 text-white hover:text-gray-300 ${mobile ? "flex items-center justify-center w-full my-2" : ""}`}
+              initial={mobile ? { opacity: 0, y: 20 } : {}}
+              animate={mobile ? { opacity: 1, y: 0 } : {}}
+              exit={mobile ? { opacity: 0, y: -20 } : {}}
+              transition={{ duration: 0.3, delay: index * 0.1 }}
+            >
+              {text}
+            </motion.a>
+          )
+        }
+      })}
+    </>
+  )
 
   return (
     <div>
-      <button
-        popoverTarget="nav"
-        className="fixed right-4 top-4 h-16 w-16 rounded-full border-2 border-white p-2 text-3xl duration-500"
-      >
-        <span className="sr-only">Show navigation</span>🍔
-      </button>
-      <nav
-        id="nav"
-        popover=""
-        className="main-nav h-full w-full place-items-center bg-transparent p-0 text-4xl text-white"
-      >
-        <button
-          popoverTarget="nav"
-          className="absolute right-4 top-4 z-10 h-16 w-16 rounded-full border-2 border-white p-2 text-3xl"
-        >
-          <span className="sr-only">Hide navigation</span>❌
-        </button>
-        <div className="relative flex flex-col gap-6 text-4xl">
-          {anchors.map(([href, text, subItems]) => {
-            if (subItems) {
-              return (
-                <div key={href} className="relative block text-center z-10">
-                  <button
-                    onClick={() => setShowAboutMenu(!showAboutMenu)}
-                    className="relative flex items-center justify-center gap-2"
-                  >
-                    {text}
-                    {showAboutMenu ? <ChevronUp className="h-6 w-6" /> : <ChevronDown className="h-6 w-6" />}
-                  </button>
-                  {showAboutMenu && (
-                    <div className="absolute left-1/2 mt-2 w-48 -translate-x-1/2 transform rounded-md bg-white p-2 shadow-lg">
-                      {subItems.map(([subHref, subText]) => (
-                        <a key={subHref} href={subHref} className="block p-2 text-lg text-gray-800 hover:bg-gray-100">
-                          {subText}
-                        </a>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )
-            } else {
-              return (
-                <a key={href} href={href} className="relative block text-center">
-                  {text}
-                </a>
-              )
-            }
-          })}
+      <nav className=" w-[400px] mx-auto p-4">
+        <div className="container mx-auto flex items-center justify-between">
+          <a href="/" className="text-xl font-bold text-white">
+            Logo
+          </a>
+
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center space-x-4">
+            <NavItems />
+          </div>
+
+          {/* Mobile Menu Button */}
+          <motion.button
+            className="md:hidden text-white"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            animate={{ rotate: mobileMenuOpen ? 90 : 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </motion.button>
         </div>
+
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              className="md:hidden"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="flex flex-col items-center">
+                <NavItems mobile />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
-      <section className="grid min-h-screen place-items-center bg-[linear-gradient(to_bottom,rgba(0,0,0,.8),rgba(0,0,0,.9)),url(/img/popover-starting-style/9999.webp)] bg-cover bg-center text-[7vw]">
+      <section className="grid min-h-screen place-items-center text-[7vw] text-white">
         Just one more z-index...
       </section>
       <section className="grid min-h-screen place-items-center text-4xl">More website content</section>
