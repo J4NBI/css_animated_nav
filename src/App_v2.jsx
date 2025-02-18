@@ -53,7 +53,7 @@ function App() {
               <button
                 onClick={() => setShowAboutMenu(!showAboutMenu)}
                 className={`flex items-center justify-center gap-2 px-3 py-2 text-white hover:text-gray-300 ${
-                  mobile ? "relative w-[200px] mx-auto" : ""
+                  mobile ? "w-full" : ""
                 }`}
               >
                 {text}
@@ -93,7 +93,7 @@ function App() {
             <motion.a
               key={href}
               href={href}
-              className={`px-3 py-2 text-white hover:text-gray-300 ${mobile ? "flex items-center justify-center w-full my-2" : ""}`}
+              className={`px-3 py-2 text-white hover:text-gray-300 ${mobile ? "block w-full my-2 text-center" : ""}`}
               initial={mobile ? { opacity: 0, y: 20 } : {}}
               animate={mobile ? { opacity: 1, y: 0 } : {}}
               exit={mobile ? { opacity: 0, y: -20 } : {}}
@@ -109,7 +109,7 @@ function App() {
 
   return (
     <div>
-      <nav className=" p-4">
+      <nav className="bg-gray-800 p-4">
         <div className="container mx-auto flex items-center justify-between">
           <a href="/" className="text-xl font-bold text-white">
             Logo

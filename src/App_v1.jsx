@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState } from "react"
 import { ChevronDown, ChevronUp, Menu, X } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "motion/react"
 
 const anchors = [
   ["/", "Home"],
@@ -21,20 +21,6 @@ const anchors = [
 function App() {
   const [showAboutMenu, setShowAboutMenu] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const aboutMenuRef = useRef(null)
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (aboutMenuRef.current && !aboutMenuRef.current.contains(event.target)) {
-        setShowAboutMenu(false)
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
 
   const NavItems = ({ mobile = false }) => (
     <>
@@ -43,7 +29,6 @@ function App() {
           return (
             <motion.div
               key={href}
-              ref={aboutMenuRef}
               className={`mx-0 relative ${mobile ? "w-full ml-2" : ""}`}
               initial={mobile ? { opacity: 0, y: 40 } : {}}
               animate={mobile ? { opacity: 1, y: 0 } : {}}
@@ -53,7 +38,7 @@ function App() {
               <button
                 onClick={() => setShowAboutMenu(!showAboutMenu)}
                 className={`flex items-center justify-center gap-2 px-3 py-2 text-white hover:text-gray-300 ${
-                  mobile ? "relative w-[200px] mx-auto" : ""
+                  mobile ? "w-full" : ""
                 }`}
               >
                 {text}
@@ -63,7 +48,7 @@ function App() {
                 {showAboutMenu && (
                   <motion.div
                     className={`mt-2 rounded-md bg-white p-2 shadow-lg ${
-                      mobile ? "relative w-full" : "absolute left-1/2 transform -translate-x-1/2 w-48"
+                      mobile ? "relative w-[200px] mx-auto" : "absolute left-1/2 transform -translate-x-1/2 w-48"
                     }`}
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -109,7 +94,7 @@ function App() {
 
   return (
     <div>
-      <nav className=" p-4">
+      <nav className=" w-[400px] mx-auto p-4">
         <div className="container mx-auto flex items-center justify-between">
           <a href="/" className="text-xl font-bold text-white">
             Logo
@@ -147,9 +132,9 @@ function App() {
             </motion.div>
           )}
         </AnimatePresence>
-      </nav>
+      </nav>""
 
-      <section className="grid min-h-screen place-items-center bg-[linear-gradient(to_bottom,rgba(0,0,0,.8),rgba(0,0,0,.9)),url(/img/popover-starting-style/9999.webp)] bg-cover bg-center text-[7vw] text-white">
+      <section className="grid min-h-screen place-items-center text-[7vw] text-white">
         Just one more z-index...
       </section>
       <section className="grid min-h-screen place-items-center text-4xl">More website content</section>
