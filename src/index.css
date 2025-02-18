@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    background-color: #111;
+    color: #fff;
+  }
+
+  .main-nav,
+  .main-nav::backdrop {
+    transition:
+      500ms opacity,
+      500ms overlay allow-discrete,
+      500ms display allow-discrete;
+    opacity: 0;
+  }
+
+  .main-nav a {
+    transition: 500ms transform;
+    transform: translateY(-48px);
+  }
+
+  .main-nav::backdrop {
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+  }
+
+  .main-nav:popover-open {
+    opacity: 1;
+    display: grid;
+  }
+
+  .main-nav:popover-open a {
+    transform: translateY(0);
+  }
+
+  .main-nav:popover-open::backdrop {
+    opacity: 1;
+  }
+
+  @starting-style {
+    .main-nav:popover-open,
+    .main-nav:popover-open::backdrop {
+      opacity: 0;
+    }
+
+    .main-nav:popover-open a {
+      transform: translateY(48px);
+    }
+  }
+}
